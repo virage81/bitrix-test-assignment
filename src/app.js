@@ -61,6 +61,7 @@ BX24.init(function () {
 				let total = data.total(),
 					res = data.answer.result;
 				totalTasks = total;
+				console.log(data);
 
 				if (total == 0) {
 					tasks.error = "У пользователя не было задач в данном периоде!";
@@ -68,6 +69,7 @@ BX24.init(function () {
 					for (let i = 0; i < res.tasks.length; i++) {
 						tasks.push({
 							title: res.tasks[i].title,
+							taskId: res.tasks[i].id,
 							createdDate: res.tasks[i].createdDate.slice(0, 10),
 							closedDate: res.tasks[i].closedDate.slice(0, 10),
 						});
@@ -83,25 +85,29 @@ BX24.init(function () {
 	function loadTableFunc() {
 		let out = "",
 			table;
-
-		for (let i = 0; i < totalTasks; i++) {
-			if (i == 0) {
-				out += `
+		console.log(tasks.error);
+		if (tasks.error != undefined) {
+			out = "<tr><td colspan='0' scope='colgroup'><p>У пользователя не было задач в данном периоде!</p></td></tr>";
+		} else {
+			for (let i = 0; i < totalTasks; i++) {
+				if (i == 0) {
+					out += `
 									<tr>
 										<td height='100%' rowspan="0" scope="rowgroup">${username}</td>
-										<td scope="row">${tasks[i].title}</td>
+										<td scope="row"><a href="https://adara.bitrix24.ru/company/personal/user/${userId}/tasks/task/view/${tasks[i].taskId}/">${tasks[i].title}</a></td>
 										<td scope="row">${tasks[i].createdDate}</td>
 										<td scope="row">${tasks[i].closedDate}</td>
 										<td height='100%' rowspan="0" scope="rowgroup">${totalTasks}</td>
 									</tr>
 									`;
-			} else {
-				out += `
+				} else {
+					out += `
 									<tr>
-										<td scope="row">${tasks[i].title}</td>
+										<td scope="row"><a href="https://adara.bitrix24.ru/company/personal/user/${userId}/tasks/task/view/${tasks[i].taskId}/">${tasks[i].title}</a></td>
 										<td scope="row">${tasks[i].createdDate}</td>
 										<td scope="row">${tasks[i].closedDate}</td>
 									</tr>`;
+				}
 			}
 		}
 
